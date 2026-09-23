@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getDashboardStats, listOrders } from "@/lib/api";
-import { mockStats } from "@/lib/mock-data";
-import { Order } from "@/lib/types";
+import { DashboardStats, Order } from "@/lib/types";
 import OrderStatusBadge from "@/components/OrderStatusBadge";
 import StatCard from "@/components/StatCard";
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<typeof mockStats | null>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         <StatCard label="Total orders" value={fmt(stats?.totalOrders)} />
         <StatCard label="Today's orders" value={fmt(stats?.todaysOrders)} />
-        <StatCard label="Revenue" value={stats ? `₹${stats.revenue.toLocaleString("en-IN")}` : "—"} />
+        <StatCard label="Revenue" value={stats ? `₹${Number(stats.revenue).toLocaleString("en-IN")}` : "—"} />
         <StatCard label="Pending" value={fmt(stats?.pendingOrders)} tone="warn" />
         <StatCard label="Completed" value={fmt(stats?.completedOrders)} />
         <StatCard label="Cancelled" value={fmt(stats?.cancelledOrders)} />

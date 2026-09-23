@@ -69,7 +69,7 @@ export default function OrdersPage() {
                 <td className="px-4 py-3 text-slate">
                   {new Date(order.placedAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
                 </td>
-                <td className="px-4 py-3 capitalize">{order.paymentStatus}</td>
+                <td className="px-4 py-3 capitalize">{order.paymentMethod}</td>
                 <td className="px-4 py-3">
                   <OrderStatusBadge status={order.status} />
                 </td>

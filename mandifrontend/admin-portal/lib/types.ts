@@ -2,7 +2,7 @@ export type ProductStatus = "active" | "disabled";
 
 export type ProductVariant = {
   id: string;
-  weight: string; // e.g. "250g", "500g", "1kg"
+  weight: string;
   price: number;
   discountPrice?: number;
   stock: number;
@@ -25,6 +25,19 @@ export type Category = {
   productCount: number;
 };
 
+export type DashboardStats = {
+  totalOrders: number;
+  todaysOrders: number;
+  revenue: number;
+  pendingOrders: number;
+  completedOrders: number;
+  cancelledOrders: number;
+  lowStockCount: number;
+  totalProducts: number;
+  activeProducts: number;
+  ordersByStatus: Array<{ status: string; count: number }>;
+};
+
 export type OrderStatus =
   | "placed"
   | "confirmed"
@@ -45,13 +58,18 @@ export type OrderItem = {
 export type Order = {
   id: string;
   customerName: string;
+  customerEmail?: string;
   customerPhone: string;
   items: OrderItem[];
   status: OrderStatus;
-  paymentStatus: "paid" | "pending" | "refunded";
+  paymentMethod: string;
   total: number;
   placedAt: string;
   address: string;
+  deliverySlot?: string;
+  subtotal?: number;
+  deliveryFee?: number;
+  discount?: number;
 };
 
 export const ORDER_STATUS_FLOW: OrderStatus[] = [

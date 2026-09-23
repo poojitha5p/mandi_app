@@ -1,6 +1,6 @@
-import { Category, Order, Product } from "./types";
+import { Category, DashboardStats, Order, Product } from "./types";
 
-export const mockStats = {
+export const mockStats: DashboardStats = {
   totalOrders: 1284,
   todaysOrders: 42,
   revenue: 386400,
@@ -8,6 +8,9 @@ export const mockStats = {
   completedOrders: 1190,
   cancelledOrders: 76,
   lowStockCount: 5,
+  totalProducts: 4,
+  activeProducts: 3,
+  ordersByStatus: [],
 };
 
 export const mockCategories: Category[] = [
@@ -75,7 +78,7 @@ export const mockOrders: Order[] = [
       { productId: "p-4", productName: "Chicken Seekh Kebab", variant: "400g", quantity: 1, price: 199 },
     ],
     status: "out_for_delivery",
-    paymentStatus: "paid",
+    paymentMethod: "ONLINE",
     total: 537,
     placedAt: "2026-09-22T08:12:00Z",
     address: "Flat 302, Jubilee Residency, Madhapur, Hyderabad",
@@ -86,7 +89,7 @@ export const mockOrders: Order[] = [
     customerPhone: "+91 90000 54321",
     items: [{ productId: "p-2", productName: "Mutton Boneless", variant: "500g", quantity: 1, price: 469 }],
     status: "processing",
-    paymentStatus: "paid",
+    paymentMethod: "ONLINE",
     total: 469,
     placedAt: "2026-09-22T09:40:00Z",
     address: "12-4-56, Banjara Hills Rd 3, Hyderabad",
@@ -97,7 +100,7 @@ export const mockOrders: Order[] = [
     customerPhone: "+91 90000 98765",
     items: [{ productId: "p-1", productName: "Chicken Curry Cut", variant: "1kg", quantity: 1, price: 359 }],
     status: "placed",
-    paymentStatus: "pending",
+    paymentMethod: "COD",
     total: 359,
     placedAt: "2026-09-22T10:05:00Z",
     address: "Door No 8-2-120, Gachibowli, Hyderabad",
@@ -108,7 +111,7 @@ export const mockOrders: Order[] = [
     customerPhone: "+91 90000 11223",
     items: [{ productId: "p-3", productName: "Rohu Fish Curry Cut", variant: "500g", quantity: 1, price: 199 }],
     status: "cancelled",
-    paymentStatus: "refunded",
+    paymentMethod: "ONLINE",
     total: 199,
     placedAt: "2026-09-21T18:22:00Z",
     address: "Plot 45, Kondapur, Hyderabad",

@@ -67,7 +67,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
           <span>Total</span>
           <span className="tabular">₹{order.total}</span>
         </div>
-        <p className="text-xs text-slate mt-1 capitalize">Payment: {order.paymentStatus}</p>
+        <p className="text-xs text-slate mt-1 capitalize">Payment method: {order.paymentMethod}</p>
       </div>
 
       <div className="bg-white border border-line rounded-md p-6">

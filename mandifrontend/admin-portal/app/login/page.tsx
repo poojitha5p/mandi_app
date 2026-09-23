@@ -16,8 +16,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const { token } = await loginAdmin(email, password);
-      localStorage.setItem("admin_token", token);
+      await loginAdmin(email, password);
       router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

@@ -22,6 +22,7 @@ export default function Sidebar() {
 
   function logout() {
     localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_refresh_token");
     router.push("/login");
   }
 
