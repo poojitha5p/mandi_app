@@ -10,6 +10,10 @@ import {
 export default function OrdersScreen() {
   const params = useLocalSearchParams();
 
+  // =====================================================
+  // ORDER DETAILS
+  // =====================================================
+
   const productName =
     typeof params.name === "string"
       ? params.name
@@ -45,30 +49,87 @@ export default function OrdersScreen() {
       ? params.paymentMethod
       : "Cash on Delivery";
 
+  const orderId =
+    typeof params.orderId === "string"
+      ? params.orderId
+      : "#MAN10234";
+
+  // =====================================================
+  // TRACK ORDER
+  // =====================================================
+
+  const handleTrackOrder = () => {
+    router.push({
+      pathname: "/track-order",
+
+      params: {
+        orderId: orderId,
+        name: productName,
+        weight: weight,
+        cut: cut,
+        quantity: quantity,
+        total: total,
+        slot: slot,
+        paymentMethod: paymentMethod,
+      },
+    });
+  };
+
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
     >
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.back}>← Back</Text>
+      {/* BACK BUTTON */}
+
+      <TouchableOpacity
+        onPress={() => router.back()}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.back}>
+          ← Back
+        </Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>My Orders</Text>
+      {/* PAGE TITLE */}
+
+      <Text style={styles.title}>
+        My Orders
+      </Text>
+
+      {/* ORDER CARD */}
 
       <View style={styles.orderCard}>
+        {/* ORDER HEADER */}
+
         <View style={styles.topRow}>
-          <View>
-            <Text style={styles.orderId}>#MAN10234</Text>
-            <Text style={styles.date}>Placed Today</Text>
+          <View style={styles.orderHeaderInfo}>
+            <Text style={styles.orderId}>
+              {orderId}
+            </Text>
+
+            <Text style={styles.date}>
+              Placed Today
+            </Text>
           </View>
 
           <View style={styles.statusBox}>
-            <Text style={styles.status}>Confirmed</Text>
+            <Text style={styles.status}>
+              Confirmed
+            </Text>
           </View>
         </View>
 
+        {/* DIVIDER */}
+
         <View style={styles.divider} />
+
+        {/* PRODUCT */}
 
         <Text style={styles.productName}>
           {productName}
@@ -82,28 +143,48 @@ export default function OrdersScreen() {
           Quantity: {quantity}
         </Text>
 
+        {/* DELIVERY */}
+
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Delivery</Text>
+          <Text style={styles.label}>
+            Delivery
+          </Text>
+
           <Text style={styles.value}>
             Today, {slot}
           </Text>
         </View>
 
+        {/* PAYMENT */}
+
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Payment</Text>
+          <Text style={styles.label}>
+            Payment
+          </Text>
+
           <Text style={styles.value}>
             {paymentMethod}
           </Text>
         </View>
 
+        {/* TOTAL */}
+
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Total</Text>
-          <Text style={styles.total}>₹{total}</Text>
+          <Text style={styles.label}>
+            Total
+          </Text>
+
+          <Text style={styles.total}>
+            ₹{total}
+          </Text>
         </View>
+
+        {/* TRACK ORDER */}
 
         <TouchableOpacity
           style={styles.trackButton}
-          onPress={() => {}}
+          onPress={handleTrackOrder}
+          activeOpacity={0.8}
         >
           <Text style={styles.trackText}>
             Track Order
@@ -111,9 +192,12 @@ export default function OrdersScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* CONTINUE SHOPPING */}
+
       <TouchableOpacity
         style={styles.shopButton}
         onPress={() => router.replace("/home")}
+        activeOpacity={0.8}
       >
         <Text style={styles.shopText}>
           Continue Shopping
@@ -123,6 +207,10 @@ export default function OrdersScreen() {
   );
 }
 
+// =====================================================
+// STYLES
+// =====================================================
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -130,6 +218,9 @@ const styles = StyleSheet.create({
   },
 
   content: {
+    width: "100%",
+    maxWidth: 600,
+    alignSelf: "center",
     padding: 20,
     paddingBottom: 50,
   },
@@ -143,14 +234,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: "bold",
+    color: "#111111",
     marginBottom: 25,
   },
 
   orderCard: {
+    width: "100%",
     borderWidth: 1,
     borderColor: "#EEEEEE",
     borderRadius: 15,
     padding: 20,
+    backgroundColor: "#FFFFFF",
   },
 
   topRow: {
@@ -159,13 +253,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+  orderHeaderInfo: {
+    flex: 1,
+    paddingRight: 10,
+  },
+
   orderId: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#111111",
   },
 
   date: {
     color: "#777777",
+    fontSize: 14,
     marginTop: 5,
   },
 
@@ -179,6 +280,7 @@ const styles = StyleSheet.create({
   status: {
     color: "#2E7D32",
     fontWeight: "bold",
+    fontSize: 14,
   },
 
   divider: {
@@ -190,51 +292,70 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#111111",
   },
 
   details: {
     color: "#777777",
+    fontSize: 15,
     marginTop: 6,
   },
 
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-start",
     marginTop: 18,
   },
 
   label: {
     color: "#777777",
+    fontSize: 15,
+    flex: 1,
   },
 
   value: {
+    color: "#111111",
     fontWeight: "600",
+    fontSize: 15,
+    flex: 2,
+    textAlign: "right",
   },
 
   total: {
+    color: "#111111",
     fontSize: 18,
     fontWeight: "bold",
+    flex: 2,
+    textAlign: "right",
   },
 
   trackButton: {
-    borderWidth: 1,
+    width: "100%",
+    borderWidth: 1.5,
     borderColor: "#D32F2F",
     borderRadius: 10,
-    padding: 15,
+    paddingVertical: 16,
     marginTop: 25,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   trackText: {
     color: "#D32F2F",
     textAlign: "center",
+    fontSize: 16,
     fontWeight: "bold",
   },
 
   shopButton: {
+    width: "100%",
     backgroundColor: "#D32F2F",
     borderRadius: 10,
-    padding: 18,
+    paddingVertical: 18,
     marginTop: 25,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   shopText: {

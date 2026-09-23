@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import {
+    Image,
     ScrollView,
     StyleSheet,
     Text,
@@ -8,6 +9,58 @@ import {
 } from "react-native";
 
 import { useCart } from "../context/CartContext";
+
+// =====================================================
+// PRODUCT IMAGES
+// =====================================================
+
+const productImages: Record<string, any> = {
+  // CHICKEN
+  "Chicken Curry Cut": require("../../assets/images/chicken-curry-cut.jpg"),
+  "Chicken Breast": require("../../assets/images/chicken-breast.jpeg"),
+  "Chicken Boneless": require("../../assets/images/chicken-boneless.webp"),
+  "Chicken Wings": require("../../assets/images/chicken-wings.jpg"),
+  "Chicken Drumsticks": require("../../assets/images/chicken-drumsticks.jpg"),
+  "Chicken Keema": require("../../assets/images/chicken-keema.jpg"),
+  "Chicken Liver": require("../../assets/images/chicken-liver.jpg"),
+  "Chicken Skin": require("../../assets/images/chicken-skin.jpg"),
+
+  // MUTTON
+  "Fresh Mutton": require("../../assets/images/mutton.png"),
+  "Mutton Curry Cut": require("../../assets/images/mutton.png"),
+  "Mutton Curry Cut With Bone": require(
+    "../../assets/images/mutton-currycut-with-bone.jpeg"
+  ),
+  "Mutton Boneless": require("../../assets/images/mutton-boneless.jpg"),
+  "Mutton Keema": require("../../assets/images/mutton-keema.jpg"),
+  "Mutton Liver": require("../../assets/images/mutton-liver.jpg"),
+
+  // FISH
+  "Fresh Fish": require("../../assets/images/fish.jpg"),
+  "Fish Curry Cut": require("../../assets/images/fish-curry-cut.jpg"),
+  "Fish Tawa Cut": require("../../assets/images/fish-tawa-cut.jpg"),
+  "Fish Fillet": require("../../assets/images/fish-fillet.jpg"),
+  "Fish Boneless": require("../../assets/images/fish-boneless.jpg"),
+
+  // SEAFOOD
+  "Fresh Prawns": require("../../assets/images/prawns.jpeg"),
+  "Cleaned Prawns": require("../../assets/images/cleaned-prawns.jpg"),
+
+  // EGGS
+  "Farm Fresh Eggs": require("../../assets/images/eggs.jpg"),
+
+  // READY TO COOK
+  "Chicken Tikka": require("../../assets/images/chicken-tikka.png"),
+  "Chicken Kebab": require("../../assets/images/chicken-kebab.png"),
+  "Chicken 65": require("../../assets/images/chicken-65.png"),
+  "Tandoori Chicken": require("../../assets/images/chicken-tandoori.png"),
+  "Marinated Chicken": require("../../assets/images/marinated-chicken.jpg"),
+  "Fish Tikka": require("../../assets/images/fish-tikka.jpg"),
+};
+
+// =====================================================
+// CART SCREEN
+// =====================================================
 
 export default function CartScreen() {
   const {
@@ -22,232 +75,251 @@ export default function CartScreen() {
   const deliveryFee = cartItems.length > 0 ? 30 : 0;
   const total = cartTotal + deliveryFee;
 
-  // Select emoji based on product
-  const getProductEmoji = (name: string) => {
-    const lowerName = name.toLowerCase();
-
-    if (lowerName.includes("fish")) return "🐟";
-    if (lowerName.includes("prawn")) return "🦐";
-    if (lowerName.includes("seafood")) return "🦐";
-    if (lowerName.includes("mutton")) return "🥩";
-    if (lowerName.includes("egg")) return "🥚";
-
-    return "🍗";
-  };
-
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
-      {/* BACK */}
+      <View style={styles.mainContent}>
+        {/* BACK */}
 
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.back}>← Back</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.back}>← Back</Text>
+        </TouchableOpacity>
 
-      {/* TITLE */}
+        {/* TITLE */}
 
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>Your Cart</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Your Cart</Text>
 
-        {cartCount > 0 && (
-          <View style={styles.countBadge}>
-            <Text style={styles.countBadgeText}>
-              {cartCount}
-            </Text>
-          </View>
-        )}
-      </View>
-
-      {/* EMPTY CART */}
-
-      {cartItems.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>🛒</Text>
-
-          <Text style={styles.emptyTitle}>
-            Your cart is empty
-          </Text>
-
-          <Text style={styles.emptyText}>
-            Add some fresh products to your cart.
-          </Text>
-
-          <TouchableOpacity
-            style={styles.shoppingButton}
-            onPress={() => router.push("/home")}
-          >
-            <Text style={styles.shoppingButtonText}>
-              Continue Shopping
-            </Text>
-          </TouchableOpacity>
+          {cartCount > 0 && (
+            <View style={styles.countBadge}>
+              <Text style={styles.countBadgeText}>
+                {cartCount}
+              </Text>
+            </View>
+          )}
         </View>
-      ) : (
-        <>
-          {/* MULTIPLE CART PRODUCTS */}
 
-          {cartItems.map((item) => (
-            <View
-              key={item.id}
-              style={styles.itemWrapper}
+        {/* EMPTY CART */}
+
+        {cartItems.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyIcon}>🛒</Text>
+
+            <Text style={styles.emptyTitle}>
+              Your cart is empty
+            </Text>
+
+            <Text style={styles.emptyText}>
+              Add some fresh products to your cart.
+            </Text>
+
+            <TouchableOpacity
+              style={styles.shoppingButton}
+              onPress={() => router.push("/home")}
             >
-              <View style={styles.productCard}>
-                {/* IMAGE */}
+              <Text style={styles.shoppingButtonText}>
+                Continue Shopping
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            {/* =========================================
+                CART ITEMS
+            ========================================= */}
 
-                <View style={styles.imageBox}>
-                  <Text style={styles.image}>
-                    {getProductEmoji(item.name)}
-                  </Text>
-                </View>
+            {cartItems.map((item) => {
+              const productImage =
+                productImages[item.name] ||
+                productImages["Chicken Curry Cut"];
 
-                {/* PRODUCT INFO */}
+              return (
+                <View
+                  key={item.id}
+                  style={styles.productCard}
+                >
+                  {/* TOP SECTION */}
 
-                <View style={styles.productInfo}>
-                  <Text style={styles.productName}>
-                    {item.name}
-                  </Text>
+                  <View style={styles.productTopRow}>
+                    {/* REAL IMAGE */}
 
-                  <Text style={styles.productDetails}>
-                    {item.weight} • {item.cut}
-                  </Text>
+                    <View style={styles.imageBox}>
+                      <Image
+                        source={productImage}
+                        style={styles.productImage}
+                        resizeMode="contain"
+                      />
+                    </View>
 
-                  <Text style={styles.productPrice}>
-                    ₹{item.price}
-                  </Text>
+                    {/* PRODUCT INFORMATION */}
 
-                  {item.quantity > 1 && (
-                    <Text style={styles.itemSubtotal}>
-                      ₹{item.price} × {item.quantity} = ₹
-                      {item.price * item.quantity}
-                    </Text>
-                  )}
-                </View>
+                    <View style={styles.productInfo}>
+                      <Text
+                        style={styles.productName}
+                        numberOfLines={2}
+                      >
+                        {item.name}
+                      </Text>
 
-                {/* QUANTITY */}
+                      <Text
+                        style={styles.productDetails}
+                        numberOfLines={2}
+                      >
+                        {item.weight}
+                        {item.cut ? ` • ${item.cut}` : ""}
+                      </Text>
 
-                <View style={styles.quantityContainer}>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() =>
-                      decreaseQuantity(item.id)
-                    }
-                  >
-                    <Text
-                      style={styles.quantityButtonText}
+                      {/* UNIT PRICE ONLY */}
+
+                      <Text style={styles.productPrice}>
+                        ₹{item.price}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* BOTTOM SECTION */}
+
+                  <View style={styles.cardBottom}>
+                    {/* REMOVE */}
+
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={() =>
+                        removeFromCart(item.id)
+                      }
                     >
-                      −
-                    </Text>
-                  </TouchableOpacity>
+                      <Text style={styles.remove}>
+                        Remove
+                      </Text>
+                    </TouchableOpacity>
 
-                  <Text style={styles.quantityText}>
-                    {item.quantity}
-                  </Text>
+                    {/* QUANTITY */}
 
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() =>
-                      increaseQuantity(item.id)
-                    }
-                  >
-                    <Text
-                      style={styles.quantityButtonText}
-                    >
-                      +
-                    </Text>
-                  </TouchableOpacity>
+                    <View style={styles.quantityContainer}>
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() =>
+                          decreaseQuantity(item.id)
+                        }
+                      >
+                        <Text
+                          style={styles.quantityButtonText}
+                        >
+                          −
+                        </Text>
+                      </TouchableOpacity>
+
+                      <Text style={styles.quantityText}>
+                        {item.quantity}
+                      </Text>
+
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() =>
+                          increaseQuantity(item.id)
+                        }
+                      >
+                        <Text
+                          style={styles.quantityButtonText}
+                        >
+                          +
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
+              );
+            })}
+
+            {/* =========================================
+                BILL DETAILS
+            ========================================= */}
+
+            <View style={styles.billCard}>
+              <Text style={styles.billTitle}>
+                Bill Details
+              </Text>
+
+              <View style={styles.row}>
+                <Text style={styles.rowLabel}>
+                  Subtotal
+                </Text>
+
+                <Text style={styles.rowValue}>
+                  ₹{cartTotal}
+                </Text>
               </View>
 
-              {/* REMOVE */}
-
-              <TouchableOpacity
-                onPress={() =>
-                  removeFromCart(item.id)
-                }
-              >
-                <Text style={styles.remove}>
-                  Remove
+              <View style={styles.row}>
+                <Text style={styles.rowLabel}>
+                  Delivery Fee
                 </Text>
-              </TouchableOpacity>
-            </View>
-          ))}
 
-          {/* BILL DETAILS */}
+                <Text style={styles.rowValue}>
+                  ₹{deliveryFee}
+                </Text>
+              </View>
 
-          <View style={styles.billCard}>
-            <Text style={styles.billTitle}>
-              Bill Details
-            </Text>
+              <View style={styles.divider} />
 
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>
-                Items ({cartCount})
-              </Text>
+              <View style={styles.row}>
+                <Text style={styles.totalText}>
+                  Total
+                </Text>
 
-              <Text style={styles.rowValue}>
-                ₹{cartTotal}
-              </Text>
+                <Text style={styles.totalText}>
+                  ₹{total}
+                </Text>
+              </View>
             </View>
 
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>
-                Delivery Fee
+            {/* =========================================
+                CHECKOUT
+            ========================================= */}
+
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={() =>
+                router.push({
+                  pathname: "/checkout",
+                  params: {
+                    subtotal: String(cartTotal),
+                    deliveryFee: String(deliveryFee),
+                    total: String(total),
+                  },
+                })
+              }
+            >
+              <Text style={styles.checkoutText}>
+                Proceed to Checkout
               </Text>
+            </TouchableOpacity>
 
-              <Text style={styles.rowValue}>
-                ₹{deliveryFee}
+            {/* ADD MORE */}
+
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={() => router.push("/home")}
+            >
+              <Text style={styles.continueText}>
+                + Add More Items
               </Text>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.row}>
-              <Text style={styles.totalText}>
-                Total
-              </Text>
-
-              <Text style={styles.totalText}>
-                ₹{total}
-              </Text>
-            </View>
-          </View>
-
-          {/* CHECKOUT */}
-
-          <TouchableOpacity
-            style={styles.checkoutButton}
-            onPress={() =>
-              router.push({
-                pathname: "/checkout",
-                params: {
-                  subtotal: String(cartTotal),
-                  deliveryFee: String(deliveryFee),
-                  total: String(total),
-                },
-              })
-            }
-          >
-            <Text style={styles.checkoutText}>
-              Proceed to Checkout • ₹{total}
-            </Text>
-          </TouchableOpacity>
-
-          {/* CONTINUE SHOPPING */}
-
-          <TouchableOpacity
-            style={styles.continueButton}
-            onPress={() => router.push("/home")}
-          >
-            <Text style={styles.continueText}>
-              + Add More Items
-            </Text>
-          </TouchableOpacity>
-        </>
-      )}
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
     </ScrollView>
   );
 }
+
+// =====================================================
+// STYLES
+// =====================================================
 
 const styles = StyleSheet.create({
   container: {
@@ -256,20 +328,35 @@ const styles = StyleSheet.create({
   },
 
   contentContainer: {
-    padding: 20,
+    paddingHorizontal: 16,
+    paddingTop: 20,
     paddingBottom: 60,
+  },
+
+  mainContent: {
+    width: "100%",
+    maxWidth: 900,
+    alignSelf: "center",
+  },
+
+  // BACK
+
+  backButton: {
+    alignSelf: "flex-start",
+    marginBottom: 20,
   },
 
   back: {
     color: "#D32F2F",
     fontSize: 16,
-    marginBottom: 25,
   },
+
+  // TITLE
 
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 25,
   },
 
   title: {
@@ -279,9 +366,9 @@ const styles = StyleSheet.create({
 
   countBadge: {
     backgroundColor: "#D32F2F",
-    minWidth: 30,
-    height: 30,
-    borderRadius: 15,
+    minWidth: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 12,
@@ -290,124 +377,168 @@ const styles = StyleSheet.create({
 
   countBadgeText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
     fontSize: 14,
+    fontWeight: "bold",
   },
 
-  itemWrapper: {
-    marginBottom: 20,
-  },
+  // =====================================================
+  // PRODUCT CARD
+  // =====================================================
 
   productCard: {
+    width: "100%",
     borderWidth: 1,
-    borderColor: "#EEEEEE",
-    borderRadius: 15,
-    padding: 18,
+    borderColor: "#E7E7E7",
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+  },
+
+  productTopRow: {
     flexDirection: "row",
     alignItems: "center",
+    width: "100%",
   },
+
+  // IMAGE
 
   imageBox: {
-    width: 95,
-    height: 95,
-    backgroundColor: "#FFF3F3",
+    width: 100,
+    height: 100,
     borderRadius: 12,
+    backgroundColor: "#FFF3F3",
+    overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
+    flexShrink: 0,
   },
 
-  image: {
-    fontSize: 45,
+  productImage: {
+    width: "100%",
+    height: "100%",
   },
+
+  // PRODUCT INFO
 
   productInfo: {
     flex: 1,
-    marginLeft: 18,
+    marginLeft: 14,
+    minWidth: 0,
   },
 
   productName: {
-    fontSize: 19,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#111111",
+    lineHeight: 23,
   },
 
   productDetails: {
     color: "#777777",
-    fontSize: 15,
-    marginTop: 6,
+    fontSize: 14,
+    marginTop: 5,
+    lineHeight: 20,
   },
 
   productPrice: {
+    color: "#111111",
     fontSize: 19,
     fontWeight: "bold",
-    marginTop: 8,
+    marginTop: 7,
   },
 
-  itemSubtotal: {
-    color: "#777777",
-    fontSize: 13,
-    marginTop: 4,
+  // =====================================================
+  // CARD BOTTOM
+  // =====================================================
+
+  cardBottom: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#F0F0F0",
   },
+
+  // REMOVE
+
+  removeButton: {
+    paddingVertical: 8,
+    paddingRight: 12,
+  },
+
+  remove: {
+    color: "#D32F2F",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+
+  // QUANTITY
 
   quantityContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 10,
   },
 
   quantityButton: {
-    width: 42,
-    height: 42,
-    borderWidth: 1,
+    width: 38,
+    height: 38,
+    borderWidth: 1.5,
     borderColor: "#D32F2F",
-    borderRadius: 10,
+    borderRadius: 9,
     justifyContent: "center",
     alignItems: "center",
   },
 
   quantityButtonText: {
     color: "#D32F2F",
-    fontSize: 23,
+    fontSize: 22,
+    fontWeight: "500",
+    lineHeight: 24,
   },
 
   quantityText: {
+    minWidth: 38,
+    textAlign: "center",
     fontSize: 17,
     fontWeight: "bold",
-    marginHorizontal: 15,
   },
 
-  remove: {
-    color: "#D32F2F",
-    fontSize: 15,
-    marginTop: 10,
-    marginLeft: 5,
-  },
+  // =====================================================
+  // BILL
+  // =====================================================
 
   billCard: {
     backgroundColor: "#F8F8F8",
     borderRadius: 15,
-    padding: 22,
+    padding: 20,
     marginTop: 10,
   },
 
   billTitle: {
     fontSize: 21,
     fontWeight: "bold",
-    marginBottom: 25,
+    marginBottom: 24,
   },
 
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 18,
   },
 
   rowLabel: {
     fontSize: 16,
+    color: "#333333",
   },
 
   rowValue: {
     fontSize: 16,
     fontWeight: "500",
+    color: "#111111",
   },
 
   divider: {
@@ -421,11 +552,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
+  // =====================================================
+  // CHECKOUT
+  // =====================================================
+
   checkoutButton: {
     backgroundColor: "#D32F2F",
-    paddingVertical: 18,
+    paddingVertical: 17,
     borderRadius: 10,
-    marginTop: 30,
+    marginTop: 25,
   },
 
   checkoutText: {
@@ -435,8 +570,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
+  // =====================================================
+  // ADD MORE
+  // =====================================================
+
   continueButton: {
-    paddingVertical: 17,
+    paddingVertical: 16,
     borderWidth: 1,
     borderColor: "#D32F2F",
     borderRadius: 10,
@@ -449,6 +588,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+
+  // =====================================================
+  // EMPTY CART
+  // =====================================================
 
   emptyContainer: {
     alignItems: "center",
